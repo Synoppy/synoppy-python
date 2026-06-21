@@ -1,0 +1,37 @@
+[project]
+name = "synoppy"
+version = "1.0.0"
+description = "Official Python SDK for the Synoppy web-data API — scrape, screenshot, crawl, map, extract, classify, enrich, and images."
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+authors = [{ name = "Saanora", email = "support@synoppy.com" }]
+dependencies = ["requests>=2.25"]
+keywords = ["synoppy", "scraping", "crawler", "web-data", "markdown", "llm", "agents", "rag"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+]
+
+[project.urls]
+Homepage = "https://synoppy.com"
+Documentation = "https://synoppy.com/docs/sdks"
+Repository = "https://github.com/Synoppy/synoppy-python"
+Issues = "https://github.com/Synoppy/synoppy-python/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+exclude = ["**/__pycache__", "*.pyc"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["synoppy"]
