@@ -1,6 +1,6 @@
 [project]
 name = "synoppy"
-version = "1.0.0"
+version = "1.1.0"
 description = "Official Python SDK for the Synoppy web-data API — scrape, screenshot, crawl, map, extract, classify, enrich, and images."
 readme = "README.md"
 requires-python = ">=3.8"

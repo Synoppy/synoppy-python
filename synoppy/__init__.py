@@ -11,7 +11,7 @@ from typing import Any, Dict, List, Optional, Union
 
 import requests
 
-__version__ = "1.0.0"
+__version__ = "1.1.0"
 DEFAULT_BASE_URL = "https://synoppy.com"
 
 
@@ -147,10 +147,13 @@ class Synoppy:
         url: str,
         prompt: Optional[str] = None,
         instruction: Optional[str] = None,
+        schema: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """AI-structured JSON extraction (requires a key).
 
-        ``instruction`` is an alias for ``prompt``. The response includes
+        ``instruction`` is an alias for ``prompt``. Pass ``schema`` (a JSON
+        Schema ``dict``) to constrain ``data`` to a caller-defined shape;
+        omit it to let the model infer the structure. The response includes
         ``data``, ``model``, ``metadata``, ``truncated``,
         ``usage`` (``inputTokens``/``outputTokens``), ``latencyMs``,
         ``creditsUsed``, and ``creditsRemaining``.
@@ -160,6 +163,8 @@ class Synoppy:
             prompt = instruction
         if prompt is not None:
             body["prompt"] = prompt
+        if schema is not None:
+            body["schema"] = schema
         return self._request("/api/extract", body)
 
     def classify(self, url: str, labels: Optional[List[str]] = None) -> Dict[str, Any]:
@@ -217,6 +222,39 @@ class Synoppy:
         and ``creditsRemaining``.
         """
         return self._request("/api/images", {"url": url})
+
+    def search(
+        self,
+        query: str,
+        max_results: Optional[int] = None,
+        markdown: Optional[bool] = None,
+        include_domains: Optional[List[str]] = None,
+        exclude_domains: Optional[List[str]] = None,
+        fanout: Optional[bool] = None,
+    ) -> Dict[str, Any]:
+        """Web search → ranked results with clean source URLs (requires a key).
+
+        ``max_results`` caps the result count (1-15, default 5). Set
+        ``markdown=True`` to also read each result to clean markdown in the
+        same trip. ``include_domains``/``exclude_domains`` constrain results
+        to or away from specific domains, and ``fanout=True`` expands the
+        query into variations for higher recall (costs more). The response
+        includes ``query``, ``results`` (each with ``title``, ``url``,
+        ``snippet``, and ``markdown`` when requested), ``latencyMs``,
+        ``creditsUsed``, and ``creditsRemaining``.
+        """
+        body: Dict[str, Any] = {"query": query}
+        if max_results is not None:
+            body["maxResults"] = max_results
+        if markdown is not None:
+            body["markdown"] = markdown
+        if include_domains is not None:
+            body["includeDomains"] = include_domains
+        if exclude_domains is not None:
+            body["excludeDomains"] = exclude_domains
+        if fanout is not None:
+            body["fanout"] = fanout
+        return self._request("/api/search", body)
 
     # --- Coming soon ---------------------------------------------------------
     # /api/act is not live yet. It is intentionally not implemented; calling
